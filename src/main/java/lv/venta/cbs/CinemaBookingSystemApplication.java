@@ -8,8 +8,6 @@ public class CinemaBookingSystemApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CinemaBookingSystemApplication.class, args);
-		// mazs komentarinsh
-		// velviens mazs komentarinsh
 	}
 
 }

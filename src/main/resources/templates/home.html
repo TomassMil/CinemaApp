@@ -4,44 +4,163 @@
     <title>Cinema Booking System</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .welcome-message {
-            font-size: 1.2em;
-            color: #666;
-            margin-bottom: 30px;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h1>Welcome to Cinema Booking System</h1>
-        <div class="welcome-message">
-            <p>This is your cinema booking system dashboard. Here you can:</p>
-            <ul>
-                <li>Browse available movies</li>
-                <li>Book tickets</li>
-                <li>View your bookings</li>
-                <li>Manage your profile</li>
-            </ul>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <img src="https://placehold.co/50x50" alt="Cinema Logo" class="h-12 w-12">
+                    <span class="ml-2 text-2xl font-bold text-gray-800">Cinema Booking System</span>
+                </div>
+                
+                <!-- Search and Account -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" 
+                               placeholder="Search movies..." 
+                               class="w-64 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
+                        <button class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <button class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-user"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Now Showing Section -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Now Showing</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Movie Card 1 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <img src="https://placehold.co/300x450" alt="Movie 1" class="w-full h-[450px] object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold text-gray-800">The Last Adventure</h3>
+                        <p class="text-gray-600 mt-2">Action, Adventure</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-yellow-500">★★★★☆</span>
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Movie Card 2 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <img src="https://placehold.co/300x450" alt="Movie 2" class="w-full h-[450px] object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Midnight Mystery</h3>
+                        <p class="text-gray-600 mt-2">Thriller, Mystery</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-yellow-500">★★★★★</span>
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Movie Card 3 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <img src="https://placehold.co/300x450" alt="Movie 3" class="w-full h-[450px] object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Eternal Love</h3>
+                        <p class="text-gray-600 mt-2">Romance, Drama</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-yellow-500">★★★★☆</span>
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Movie Card 4 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <img src="https://placehold.co/300x450" alt="Movie 4" class="w-full h-[450px] object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Future World</h3>
+                        <p class="text-gray-600 mt-2">Sci-Fi, Action</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-yellow-500">★★★★★</span>
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Coming Soon Section -->
+        <section>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Coming Soon</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Coming Soon Movie Card 1 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <img src="https://placehold.co/300x450" alt="Coming Soon 1" class="w-full h-[450px] object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold text-gray-800">The Lost Kingdom</h3>
+                        <p class="text-gray-600 mt-2">Fantasy, Adventure</p>
+                        <div class="mt-4">
+                            <span class="text-blue-600">Coming June 15, 2024</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coming Soon Movie Card 2 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <img src="https://placehold.co/300x450" alt="Coming Soon 2" class="w-full h-[450px] object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Ocean's Secret</h3>
+                        <p class="text-gray-600 mt-2">Drama, Mystery</p>
+                        <div class="mt-4">
+                            <span class="text-blue-600">Coming June 22, 2024</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Cinema Booking System</h3>
+                    <p class="text-gray-400">Your ultimate destination for movie tickets and entertainment.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Connect With Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html> 
