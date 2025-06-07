@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Cinema Booking System</title>
     <meta charset="UTF-8">
@@ -28,9 +28,29 @@
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
-                    <button class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-user"></i>
-                    </button>
+                    
+                    <!-- Logged in user -->
+                    <div sec:authorize="isAuthenticated()" class="flex items-center space-x-4">
+                        <span class="text-gray-700" sec:authentication="name"></span>
+                        <form th:action="@{/logout}" method="post" class="inline">
+                            <button type="submit" class="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- Not logged in -->
+                    <div sec:authorize="!isAuthenticated()" class="flex items-center space-x-4">
+                        <a href="/login" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                        <a href="/register" class="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Register</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
