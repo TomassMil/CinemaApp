@@ -32,6 +32,12 @@
                     <!-- Logged in user -->
                     <div sec:authorize="isAuthenticated()" class="flex items-center space-x-4">
                         <span class="text-gray-700" sec:authentication="name"></span>
+                        <a href="/profile" class="inline">
+                            <button type="submit" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>My Account</span>
+                            </button>
+                        </a>
                         <form th:action="@{/logout}" method="post" class="inline">
                             <button type="submit" class="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                                 <i class="fas fa-sign-out-alt"></i>

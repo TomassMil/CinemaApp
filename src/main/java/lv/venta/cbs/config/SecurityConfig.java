@@ -17,7 +17,11 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())  // Disable CSRF for development
             .authorizeHttpRequests(auth -> auth
+                // Public pages
                 .requestMatchers("/", "/register", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                // Protected pages - require authentication
+                .requestMatchers("/profile/**", "/bookings/**", "/admin/**").authenticated()
+                // Any other request requires authentication
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
