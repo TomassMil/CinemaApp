@@ -69,4 +69,34 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
+
+    @Transactional
+    public User updateProfile(String username, String currentPassword, String newPassword, 
+                            String email, String fullName, String phoneNumber, String role) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Verify current password
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+
+        // Check if new email is already taken by another user
+        if (!email.equals(user.getEmail()) && userRepository.findByEmail(email).isPresent()) {
+            throw new RuntimeException("Email is already taken");
+        }
+
+        // Update user details
+        user.setEmail(email);
+        user.setFullName(fullName);
+        user.setPhoneNumber(phoneNumber);
+        user.setRole(role);
+
+        // Update password if provided
+        if (newPassword != null && !newPassword.trim().isEmpty()) {
+            user.setPasswordHash(passwordEncoder.encode(newPassword));
+        }
+
+        return userRepository.save(user);
+    }
 } 
