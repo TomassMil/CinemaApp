@@ -15,12 +15,11 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <img src="https://placehold.co/50x50" alt="Cinema Logo" class="h-12 w-12">
-                    <span class="ml-2 text-2xl font-bold text-gray-800">Cinema Booking System</span>
+                    <a href="/" class="ml-2 text-2xl font-bold text-gray-800">Cinema Booking System</a>
                 </div>
                 
                 <!-- Navigation -->
                 <div class="flex items-center space-x-4">
-                    <a href="/" class="text-gray-600 hover:text-gray-800">Home</a>
                     <a href="/profile" class="text-gray-600 hover:text-gray-800">Back to Profile</a>
                     <form th:action="@{/logout}" method="post" class="inline">
                         <button type="submit" class="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
