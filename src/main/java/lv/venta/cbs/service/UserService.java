@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lv.venta.cbs.model.User;
 import lv.venta.cbs.repository.UserRepository;
 
+// Service for User logic.
+
 @Service
 public class UserService implements UserDetailsService {
 
