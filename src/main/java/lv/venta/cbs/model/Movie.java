@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -62,10 +63,10 @@ public class Movie {
     // "Any operation performed on a Movie will also be automatically cascaded (applied) to its related Showtime objects."
     // - Ja izdzesh movie tad izdzeshas arii showtimes tai movie.
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
-    private List<Showtime> showtimes;
+    private ArrayList<Showtime> showtimes;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
-    private List<MovieReview> reviews;
+    private ArrayList<MovieReview> reviews;
     
     public Movie(String title, String genre, int durationInMinutes, String ageRating,
             String description, LocalDateTime releaseDate, String cast, String posterUrl) {
