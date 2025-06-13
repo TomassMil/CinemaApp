@@ -59,6 +59,8 @@ public class Movie {
     @Column(name = "PosterUrl")
     private String posterUrl;
 
+    // "Any operation performed on a Movie will also be automatically cascaded (applied) to its related Showtime objects."
+    // - Ja izdzesh movie tad izdzeshas arii showtimes tai movie.
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<Showtime> showtimes;
 
