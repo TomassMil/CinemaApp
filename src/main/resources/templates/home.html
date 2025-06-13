@@ -67,6 +67,11 @@
         <!-- Now Showing Section -->
         <section class="mb-12">
             <h2 class="text-3xl font-bold text-gray-800 mb-6">Now Showing</h2>
+            <div sec:authorize="isAuthenticated()" th:if="${currentUser.role != 'ROLE_USER'}">
+                <button class="px-4 py-2 mb-4 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+                    Add New Showtime
+                </button>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Movie Card 1 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
@@ -133,6 +138,11 @@
         <!-- Coming Soon Section -->
         <section>
             <h2 class="text-3xl font-bold text-gray-800 mb-6">Coming Soon</h2>
+            <div sec:authorize="isAuthenticated()" th:if="${currentUser.role != 'ROLE_USER'}">
+                <button class="px-4 py-2 mb-4 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+                    Add New Movie
+                </button>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Coming Soon Movie Card 1 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
