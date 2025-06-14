@@ -21,17 +21,23 @@ public class TheaterRoom {
     @Column(nullable = false)
     private String roomName;
 
-    @NotNull(message = "Capacity is required")
-    @Min(value = 1, message = "Capacity must be at least 1")
+    @NotNull(message = "seatcolumns is required")
+    @Min(value = 1, message = "seatcolumns must be at least 1")
     @Column(nullable = false)
-    private int capacity;
+    private int seatcolumns;
+
+    @NotNull(message = "seatrows is required")
+    @Min(value = 1, message = "seatrows must be at least 1")
+    @Column(nullable = false)
+    private int seatrows;
 
     public TheaterRoom() {
     }
 
-    public TheaterRoom(String roomName, int capacity) {
+    public TheaterRoom(String roomName, int seatcolumns, int seatrows) {
         this.roomName = roomName;
-        this.capacity = capacity;
+        this.seatcolumns = seatcolumns;
+        this.seatrows = seatrows;
     }
 
     public Integer getRoomId() {
@@ -51,10 +57,22 @@ public class TheaterRoom {
     }
 
     public int getCapacity() {
-        return capacity;
+        return seatcolumns * seatrows;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public int getSeatcolumns() {
+        return seatcolumns;
+    }
+
+    public void setSeatcolumns(int seatcolumns) {
+        this.seatcolumns = seatcolumns;
+    }
+
+    public int getSeatrows() {
+        return seatrows;
+    }
+
+    public void setSeatrows(int seatrows) {
+        this.seatrows = seatrows;
     }
 } 
