@@ -21,11 +21,13 @@ public class TheaterRoom {
     @Column(nullable = false)
     private String roomName;
 
+    // amount
     @NotNull(message = "seatcolumns is required")
     @Min(value = 1, message = "seatcolumns must be at least 1")
     @Column(nullable = false)
     private int seatcolumns;
 
+    // amount
     @NotNull(message = "seatrows is required")
     @Min(value = 1, message = "seatrows must be at least 1")
     @Column(nullable = false)

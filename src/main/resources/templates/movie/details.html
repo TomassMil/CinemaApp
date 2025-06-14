@@ -151,83 +151,116 @@
                             </p>
                         </div>
 						
-						<!-- Ticket Booking Modal with Dynamic Seats -->
-						<div id="ticketModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
-						    <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl">
-						        <div class="flex justify-between items-center p-4 border-b">
-						            <h2 class="text-xl font-semibold">Select Your Seats</h2>
-						            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">&times;</button>
-						        </div>
+						<!-- Trigger button -->
+					   <button th:attr="onclick=|openModal('modal-' + ${showtime.showtimeId})|"
+					           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+					       Book Tickets</span>
+					   </button>
+						
+						<!-- Modal -->
+					   <div th:id="'modal-' + ${showtime.showtimeId}"
+					        class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center overflow-auto">
+					       
+					       <div class="bg-white rounded-lg shadow-lg w-full max-w-5xl max-h-[90vh] overflow-hidden">
+					           <div class="flex justify-between items-center p-4 border-b">
+					               <h2 class="text-xl font-semibold">Select Your Seats</h2>
+					               <button type="button" class="text-gray-500 hover:text-gray-700"
+					                       th:attr="onclick=|closeModal('modal-' + ${showtime.showtimeId})|">&times;</button>
+					           </div>
 
-						        <div class="p-6">
-						            <!-- Seat Grid -->
-						            <div class="grid grid-cols-8 gap-3 justify-items-center">
-						                <!-- Dynamically render seat buttons based on room capacity -->
-						                <div th:each="seatIndex : ${#numbers.sequence(1, showtimes[0].room.capacity)}">
-						                    <!-- Check if seatIndex is already taken -->
-						                    <button type="button"
-						                            th:class="${#lists.contains(showtimes[0].tickets.?[seatNumber == seatIndex].![seatNumber], seatIndex)} ? 'w-10 h-10 rounded bg-red-400 cursor-not-allowed' : 'w-10 h-10 rounded bg-green-400 hover:bg-green-600'"
-						                            th:disabled="${#lists.contains(showtimes[0].tickets.?[seatNumber == seatIndex].![seatNumber], seatIndex)}"
-						                            th:text="${seatIndex}"
-						                            th:data-seat-index="${seatIndex}"
-						                            onclick="toggleSeat(this)">
-						                        1
-						                    </button>
-						                </div>
-						            </div>
+					           <div class="p-6 space-y-6">
+					               <!-- Seat Grid Wrapper with both horizontal and vertical scroll -->
+								   
+					               <div class="overflow-x-auto overflow-y-auto max-h-[60vh] border p-4 rounded">
+					                   <!-- Seat Grid -->
+					                   <div class="grid gap-4 justify-items-center"
+					                        th:style="'grid-template-columns: repeat(' + ${showtime.room.seatcolumns} + ', minmax(4rem, 1fr));'">
+					                       <div th:each="row : ${#numbers.sequence(1, showtime.room.seatrows)}">
+					                           <div th:each="col : ${#numbers.sequence(1, showtime.room.seatcolumns)}">
+					                               <div>
+					                                   <button type="button"
+					                                       th:id="'seat-' + ${showtime.showtimeId} + '-' + ${row} + '-' + ${col}"
+					                                       th:data-seat-row="${row}"
+					                                       th:data-seat-col="${col}"
+					                                       th:data-showtime-id="${showtime.showtimeId}"
+					                                       th:text="${row} + '-' + ${col}"
+					                                       class="w-20 h-12 text-sm rounded font-semibold transition-colors"
+					                                       th:classappend="${#lists.contains(showtime.tickets.?[seat.seatRow == row and seat.seatColumn == col].![seat], {seatRow: row, seatColumn: col})} 
+					                                           ? 'bg-red-400 mb-2 cursor-not-allowed text-white' 
+					                                           : 'bg-green-400 mb-2 hover:bg-green-600 text-black'"
+					                                       th:disabled="${#lists.contains(showtime.tickets.?[seat.seatRow == row and seat.seatColumn == col].![seat], {seatRow: row, seatColumn: col})}"
+					                                       onclick="toggleSeat(this)">
+					                                       Seat
+					                                   </button>
+					                               </div>
+					                           </div>
+					                       </div>
+					                   </div>
+					               </div>
 
-						            <!-- Selected Seats Display -->
-						            <div class="mt-6">
-						                <p class="font-medium text-gray-700">Selected Seats:</p>
-						                <div id="selectedSeats" class="mt-2 text-blue-600 font-semibold"></div>
-						            </div>
+					               <!-- Selected Seats Display -->
+					               <div>
+					                   <p class="font-medium text-gray-700">Selected Seats:</p>
+					                   <div th:id="'selectedSeats-' + ${showtime.showtimeId}" class="mt-2 text-blue-600 font-semibold"></div>
+					               </div>
 
-						            <!-- Confirm Button -->
-						            <div class="mt-6 text-right">
-						                <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Confirm Booking</button>
-						            </div>
-						        </div>
-						    </div>
-						</div>
+					               <!-- Confirm Button -->
+					               <div class="text-right">
+					                   <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+					                       Confirm Booking
+					                   </button>
+					               </div>
+					           </div>
+					       </div>
+					   </div>
 
-						<button onclick="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-						    Book Tickets
-						</button>
+						
 
 						<!-- Modal JavaScript Logic -->
 						<script>
-						    const selectedSeatSet = new Set();
+						    const selectedSeatsMap = new Map();
 
-						    function openModal() {
-						        document.getElementById('ticketModal').classList.remove('hidden');
+						    function openModal(modalId) {
+						        document.getElementById(modalId).classList.remove('hidden');
+						        if (!selectedSeatsMap.has(modalId)) {
+						            selectedSeatsMap.set(modalId, new Set());
+						        }
 						    }
 
-						    function closeModal() {
-						        document.getElementById('ticketModal').classList.add('hidden');
-						        selectedSeatSet.clear();
-						        updateSelectedSeatsDisplay();
+						    function closeModal(modalId) {
+						        document.getElementById(modalId).classList.add('hidden');
+						        selectedSeatsMap.get(modalId)?.clear();
+						        updateSelectedSeatsDisplay(modalId);
 						    }
 
 						    function toggleSeat(button) {
-						        const seatNumber = button.dataset.seatIndex;
-						        if (selectedSeatSet.has(seatNumber)) {
-						            selectedSeatSet.delete(seatNumber);
-						            button.classList.remove('bg-blue-600');
-						            button.classList.add('bg-green-400');
+						        const seatRow = button.dataset.seatRow;
+						        const seatCol = button.dataset.seatCol;
+						        const showtimeId = button.dataset.showtimeId;
+						        const seatId = `${seatRow}-${seatCol}`;
+						        const modalId = 'modal-' + showtimeId;
+
+						        const seatSet = selectedSeatsMap.get(modalId);
+						        if (seatSet.has(seatId)) {
+						            seatSet.delete(seatId);
+						            button.classList.remove('bg-blue-600', 'text-white');
+						            button.classList.add('bg-green-400', 'text-black');
 						        } else {
-						            selectedSeatSet.add(seatNumber);
-						            button.classList.remove('bg-green-400');
-						            button.classList.add('bg-blue-600');
+						            seatSet.add(seatId);
+						            button.classList.remove('bg-green-400', 'text-black');
+						            button.classList.add('bg-blue-600', 'text-white');
 						        }
-						        updateSelectedSeatsDisplay();
+						        updateSelectedSeatsDisplay(modalId);
 						    }
 
-						    function updateSelectedSeatsDisplay() {
-						        document.getElementById('selectedSeats').textContent = Array.from(selectedSeatSet).join(', ') || 'None';
+						    function updateSelectedSeatsDisplay(modalId) {
+						        const seatDisplay = document.querySelector(`#${modalId} [id^="selectedSeats-"]`);
+						        const seats = Array.from(selectedSeatsMap.get(modalId) || []);
+						        seatDisplay.textContent = seats.length > 0 ? seats.join(', ') : 'None';
 						    }
 						</script>
 						
-                    </div>
+						
                 </div>
             </div>
         </div>
