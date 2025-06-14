@@ -79,63 +79,101 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
-        <!-- Now Showing Section -->
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">Now Showing</h2>
-            <div th:if="${bookableMovies.empty}" class="alert alert-info">
-                No movies are currently showing.
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div th:each="bookableMovie : ${bookableMovies}" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                    <img th:if="${bookableMovie.posterUrl}" 
-                         th:src="${bookableMovie.posterUrl}" 
-                         class="w-full h-[450px] object-cover" 
-                         th:alt="${bookableMovie.title}">
-                    <div th:unless="${bookableMovie.posterUrl}" 
-                         class="w-full h-[450px] bg-gray-200 flex items-center justify-center">
-                        <i class="fas fa-film text-6xl text-gray-400"></i>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="text-xl font-semibold text-gray-800" th:text="${bookableMovie.title}">Movie Title</h3>
-                        <p class="text-gray-600 mt-2" th:text="${bookableMovie.genre}">Genre</p>
-                        <div class="mt-4 flex justify-between items-center">
-                            <span class="text-yellow-500" th:text="${bookableMovie.ageRating}">Age Rating</span>
-                            <a th:href="@{/movie/{id}(id=${bookableMovie.movieId})}" 
-                               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-                                Book Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        
+		<!-- Now Showing Section -->
+		<section class="mb-16">
+		    <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Now Showing</h2>
 
-        <!-- Coming Soon Section -->
-        <section>
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">Coming Soon</h2>
-            <div th:if="${upcomingMovies.empty}" class="alert alert-info">
-                No upcoming movies announced yet.
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div th:each="movie : ${upcomingMovies}" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                    <img th:if="${movie.posterUrl}" 
-                         th:src="${movie.posterUrl}" 
-                         class="w-full h-[450px] object-cover" 
-                         th:alt="${movie.title}">
-                    <div th:unless="${movie.posterUrl}" 
-                         class="w-full h-[450px] bg-gray-200 flex items-center justify-center">
-                        <i class="fas fa-film text-6xl text-gray-400"></i>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="text-xl font-semibold text-gray-800" th:text="${movie.title}">Movie Title</h3>
-                        <p class="text-gray-600 mt-2" th:text="${movie.genre}">Genre</p>
-                        <div class="mt-4">
-                            <span class="text-blue-600" th:text="${#temporals.format(movie.releaseDate, 'MMMM d, yyyy')}">Release Date</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+		    <!-- No Movies Alert -->
+		    <div th:if="${bookableMovies.size() == 0}" class="text-center py-6 bg-yellow-100 text-yellow-800 rounded-lg shadow mb-6">
+		        <i class="fas fa-exclamation-circle mr-2"></i>
+		        No movies are currently showing.
+		    </div>
+
+		    <!-- Movies Grid -->
+		    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+		        <div th:each="bookableMovie : ${bookableMovies}" 
+		             class="bg-white rounded-xl shadow-lg hover:shadow-2xl overflow-hidden transition-shadow duration-300 flex flex-col">
+		             
+		            <!-- Poster Image -->
+		            <img th:if="${bookableMovie.posterUrl != null and !#strings.isEmpty(bookableMovie.posterUrl)}"
+		                 th:src="@{${bookableMovie.posterUrl}}"
+		                 th:alt="${bookableMovie.title}"
+		                 class="w-full h-[450px] object-cover rounded-t-xl"
+		                 loading="lazy" />
+
+		            <!-- Placeholder If No Image -->
+		            <div th:unless="${bookableMovie.posterUrl != null and !#strings.isEmpty(bookableMovie.posterUrl)}"
+		                 class="w-full h-[450px] bg-gray-200 flex items-center justify-center rounded-t-xl">
+		                <i class="fas fa-film text-6xl text-gray-400"></i>
+		            </div>
+
+		            <!-- Movie Details -->
+		            <div class="p-5 flex flex-col justify-between flex-1">
+		                <div>
+		                    <h3 class="text-xl font-semibold text-gray-800" th:text="${bookableMovie.title}">Movie Title</h3>
+		                    <p class="text-gray-600 mt-1 italic" th:text="${bookableMovie.genre}">Genre</p>
+		                </div>
+		                <div class="mt-4 flex justify-between items-center">
+		                    <span class="text-sm px-3 py-1 bg-yellow-500 text-white rounded-full" 
+		                          th:text="${bookableMovie.ageRating}">PG-13</span>
+		                    <a th:href="@{/movie/{id}(id=${bookableMovie.movieId})}"
+		                       class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+		                        Book Now
+		                    </a>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</section>
+
+		<!-- Coming Soon Section -->
+		<section class="mb-16">
+		    <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Coming Soon</h2>
+
+		    <!-- No Upcoming Movies Message -->
+		    <div th:if="${#lists.isEmpty(upcomingMovies)}"
+		         class="text-center py-6 bg-blue-100 text-blue-800 rounded-lg shadow mb-6">
+		        <i class="fas fa-info-circle mr-2"></i>
+		        No upcoming movies announced yet.
+		    </div>
+
+		    <!-- Movies Grid -->
+		    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+		        <div th:each="movie : ${upcomingMovies}"
+		             class="bg-white rounded-xl shadow-lg hover:shadow-2xl overflow-hidden transition-shadow duration-300 flex flex-col">
+
+		            <!-- Poster Image -->
+		            <img th:if="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
+		                 th:src="@{${movie.posterUrl}}"
+		                 th:alt="${movie.title}"
+		                 class="w-full h-[450px] object-cover rounded-t-xl"
+		                 loading="lazy" />
+
+		            <!-- Placeholder If No Image -->
+		            <div th:unless="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
+		                 class="w-full h-[450px] bg-gray-200 flex items-center justify-center rounded-t-xl">
+		                <i class="fas fa-film text-6xl text-gray-400"></i>
+		            </div>
+
+		            <!-- Movie Info -->
+		            <div class="p-5 flex flex-col justify-between flex-1">
+		                <div>
+		                    <h3 class="text-xl font-semibold text-gray-800" th:text="${movie.title}">Movie Title</h3>
+		                    <p class="text-gray-600 mt-1 italic" th:text="${movie.genre}">Genre</p>
+		                </div>
+		                <div class="mt-4">
+		                    <span class="text-sm px-3 py-1 bg-blue-600 text-white rounded-full"
+		                          th:text="${#temporals.format(movie.releaseDate, 'MMMM d, yyyy')}">
+		                        Release Date
+		                    </span>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</section>
+		
+		
     </main>
 </body>
 </html> 

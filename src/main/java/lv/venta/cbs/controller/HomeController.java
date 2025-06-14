@@ -29,7 +29,7 @@ public class HomeController {
         List<Movie> upcomingMovies = movieService.getMoviesByStatus(Movie.MovieStatus.UPCOMING);
         model.addAttribute("upcomingMovies", upcomingMovies);
 
-        // Get upcoming movies (status = UPCOMING)
+        // Get current movies (status = BOOKABLE)
         List<Movie> bookableMovies = movieService.getMoviesByStatus(Movie.MovieStatus.BOOKABLE);
         model.addAttribute("bookableMovies", bookableMovies);
 

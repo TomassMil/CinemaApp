@@ -73,6 +73,7 @@ public class Movie {
     private String cast;
     
     @Column(name = "PosterUrl")
+    @Size(max = 1000)
     private String posterUrl;
 
     @NotNull(message = "Status is required")
