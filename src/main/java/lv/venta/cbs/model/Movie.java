@@ -1,84 +1,104 @@
 package lv.venta.cbs.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @Entity
+@Table(name = "movie")
 public class Movie {
 	// Sheit vajag more validation un parbaudes
 	
+    public enum MovieStatus {
+        UPCOMING,
+        HIDDEN,
+        BOOKABLE
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MovieId")
-    private int movieId;
+    @Column(name = "movie_id")
+    private Integer movieId;
 
-    @NotNull
+    @NotBlank(message = "Title is required")
     @Size(min = 1, max = 100)
-    @Column(name = "Title")
+    @Column(name = "Title", nullable = false)
     private String title;
     
-    @NotNull
+    @NotBlank(message = "Genre is required")
     @Pattern(regexp = "[A-Za-z -!?]{2,50}")
-    @Column(name = "Genre")
+    @Column(name = "Genre", nullable = false)
     private String genre;
     
-    @Min(1)
-    @Column(name = "DurationInMinutes")
+    @NotNull(message = "Duration is required")
+    @Min(value = 1, message = "Duration must be at least 1 minute")
+    @Column(name = "DurationInMinutes", nullable = false)
     private int durationInMinutes;
     
-    @NotNull
-    @Pattern(regexp = "G|PG|PG-13|R|NC-17")
-    @Column(name = "AgeRating")
+    @NotBlank(message = "Age rating is required")
+    @Pattern(regexp = "^(G|PG|PG-13|R|NC-17)$", message = "Age rating must be one of: G, PG, PG-13, R, NC-17")
+    @Column(name = "AgeRating", nullable = false)
     private String ageRating;
     
+    @NotBlank(message = "Description is required")
     @Size(max = 1000)
-    @Column(name = "Description")
+    @Column(name = "Description", nullable = false, length = 1000)
     private String description;
     
-    @NotNull
-    // @Future - jabut nakotnee bet vai sheit vajadzigs?
-    @Column(name = "ReleaseDate")
-    private LocalDateTime releaseDate;
+    @NotNull(message = "Release date is required")
+    @Column(name = "ReleaseDate", nullable = false)
+    private LocalDate releaseDate;
     
-    @NotNull
-    @Size(min = 1, max = 300)
     @Column(name = "Cast")
     private String cast;
     
-    @Pattern(regexp = "https?://.+\\.(jpg|png|jpeg)")
     @Column(name = "PosterUrl")
     private String posterUrl;
+
+    @NotNull(message = "Status is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "Status", nullable = false)
+    private MovieStatus status = MovieStatus.UPCOMING;
 
     // "Any operation performed on a Movie will also be automatically cascaded (applied) to its related Showtime objects."
     // - Ja izdzesh movie tad izdzeshas arii showtimes tai movie.
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
-    private ArrayList<Showtime> showtimes;
+    private List<Showtime> showtimes = new ArrayList<>();
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
-    private ArrayList<MovieReview> reviews;
+    private List<MovieReview> reviews = new ArrayList<>();
     
-    public Movie(String title, String genre, int durationInMinutes, String ageRating,
-            String description, LocalDateTime releaseDate, String cast, String posterUrl) {
-	   setTitle(title);
-	   setGenre(genre);
-	   setDurationInMinutes(durationInMinutes);
-	   setAgeRating(ageRating);
-	   setDescription(description);
-	   setReleaseDate(releaseDate);
-	   setCast(cast);
-	   setPosterUrl(posterUrl);
-	}
+    public Movie(String title, String description, int durationInMinutes, String genre, String ageRating, LocalDate releaseDate, String cast, String posterUrl, String status) {
+        this.title = title;
+        this.description = description;
+        this.durationInMinutes = durationInMinutes;
+        this.genre = genre;
+        this.ageRating = ageRating;
+        this.releaseDate = releaseDate;
+        this.cast = cast;
+        this.posterUrl = posterUrl;
+        this.status = status != null ? MovieStatus.valueOf(status) : MovieStatus.UPCOMING;
+    }
     
 
     public void setTitle(String title) {
@@ -101,8 +121,8 @@ public class Movie {
         this.description = (description != null && description.length() <= 1000) ? description : "";
     }
 
-    public void setReleaseDate(LocalDateTime releaseDate) {
-        this.releaseDate = (releaseDate != null && releaseDate.isAfter(LocalDateTime.now())) ? releaseDate : LocalDateTime.now().plusDays(1);
+    public void setReleaseDate(LocalDate releaseDate) {
+        this.releaseDate = (releaseDate != null && releaseDate.isAfter(LocalDate.now())) ? releaseDate : LocalDate.now().plusDays(1);
     }
 
     public void setCast(String cast) {
@@ -110,7 +130,11 @@ public class Movie {
     }
 
     public void setPosterUrl(String posterUrl) {
-        this.posterUrl = (posterUrl != null && posterUrl.matches("https?://.+\\.(jpg|png|jpeg)")) ? posterUrl : null;
+        //if (posterUrl.matches("https?://.+\\.(jpg|png|jpeg)")) { // realistiski runajot ir parak daudz variantu lai tam izmantotu regex
+        this.posterUrl = posterUrl;
     }
-    
+
+    public void toggleStatus() {
+        this.status = (this.status == MovieStatus.UPCOMING) ? MovieStatus.BOOKABLE : MovieStatus.UPCOMING;
+    }
 }

@@ -1,73 +1,60 @@
 package lv.venta.cbs.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Data
-@NoArgsConstructor
 @Entity
+@Table(name = "theater_rooms")
 public class TheaterRoom {
-
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RoomId")
-    private int roomId;
+    private Integer roomId;
 
-    @NotNull
-    @Pattern(regexp = "[A-Z][A-Za-z0-9\\s]{1,20}")
-    @Column(name = "RoomName")
+    @NotBlank(message = "Room name is required")
+    @Column(nullable = false)
     private String roomName;
 
-    @Min(10)
-    @Max(500)
-    @Column(name = "Capacity")
+    @NotNull(message = "Capacity is required")
+    @Min(value = 1, message = "Capacity must be at least 1")
+    @Column(nullable = false)
     private int capacity;
-    
-    @Min(1)
-    @Column(name = "NumberOfRows")
-    private int numberOfRows;
 
-    @Min(1)
-    @Column(name = "SeatsPerRow")
-    private int seatsPerRow;
-    
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<Showtime> showtimes = new ArrayList<>();
-    
-    public TheaterRoom(String roomName, int capacity, int numberOfRows, int seatsPerRow) {
-        setRoomName(roomName);
-        setCapacity(capacity);
-        setNumberOfRows(numberOfRows);
-        setSeatsPerRow(seatsPerRow);
+    public TheaterRoom() {
     }
 
-    // Setters with validation
+    public TheaterRoom(String roomName, int capacity) {
+        this.roomName = roomName;
+        this.capacity = capacity;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
     public void setRoomName(String roomName) {
-        if (roomName != null && roomName.matches("[A-Z][A-Za-z0-9\\s]{1,20}")) {
-            this.roomName = roomName;
-        } else {
-            this.roomName = "RoomX";
-        }
+        this.roomName = roomName;
+    }
+
+    public int getCapacity() {
+        return capacity;
     }
 
     public void setCapacity(int capacity) {
-        this.capacity = (capacity >= 10 && capacity <= 500) ? capacity : 100;
+        this.capacity = capacity;
     }
-
-    public void setNumberOfRows(int numberOfRows) {
-        this.numberOfRows = Math.max(1, numberOfRows);
-    }
-
-    public void setSeatsPerRow(int seatsPerRow) {
-        this.seatsPerRow = Math.max(1, seatsPerRow);
-    }
-    
-}
+} 

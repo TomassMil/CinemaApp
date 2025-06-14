@@ -1,6 +1,9 @@
 package lv.venta.cbs.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,7 +56,7 @@ public class ProfileController {
                 return "redirect:/login";
             }
 
-            userService.updateProfile(
+            User updatedUser = userService.updateProfile(
                 currentUser.getUsername(),
                 currentPassword,
                 newPassword,
@@ -62,6 +65,15 @@ public class ProfileController {
                 phoneNumber,
                 role
             );
+
+            // Update the authentication context with the new user details, since our role wont update without relooging without this
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                updatedUser,
+                auth.getCredentials(),
+                updatedUser.getAuthorities()
+            );
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
 
             redirectAttributes.addFlashAttribute("success", "Profile updated successfully");
             return "redirect:/profile";
