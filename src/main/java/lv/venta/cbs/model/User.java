@@ -1,6 +1,7 @@
 package lv.venta.cbs.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -56,7 +57,7 @@ public class User implements UserDetails {
     private String role;
 
     @OneToMany(mappedBy = "user")
-    private List<Ticket> tickets;
+    private List<Ticket> tickets = new ArrayList<>();
 
     public User() {
     }
@@ -69,6 +70,7 @@ public class User implements UserDetails {
         this.phoneNumber = phoneNumber;
         this.registrationDate = LocalDateTime.now();
         this.role = role;
+        this.tickets = new ArrayList<>();
     }
 
     public Integer getUserId() {
@@ -135,6 +137,14 @@ public class User implements UserDetails {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
     }
 
     @Override

@@ -185,10 +185,10 @@
 					                                       th:data-showtime-id="${showtime.showtimeId}"
 					                                       th:text="${row} + '-' + ${col}"
 					                                       class="w-20 h-12 text-sm rounded font-semibold transition-colors"
-					                                       th:classappend="${#lists.contains(showtime.tickets.?[seat.seatRow == row and seat.seatColumn == col].![seat], {seatRow: row, seatColumn: col})} 
+					                                       th:classappend="${#lists.contains(showtime.tickets.?[seat.seatRow == __${row}__ and seat.seatColumn == __${col}__].![seat], {seatRow: __${row}__, seatColumn: __${col}__})} 
 					                                           ? 'bg-red-400 mb-2 cursor-not-allowed text-white' 
 					                                           : 'bg-green-400 mb-2 hover:bg-green-600 text-black'"
-					                                       th:disabled="${#lists.contains(showtime.tickets.?[seat.seatRow == row and seat.seatColumn == col].![seat], {seatRow: row, seatColumn: col})}"
+					                                       th:disabled="${#lists.contains(showtime.tickets.?[seat.seatRow == __${row}__ and seat.seatColumn == __${col}__].![seat], {seatRow: __${row}__, seatColumn: __${col}__})}"
 					                                       onclick="toggleSeat(this)">
 					                                       Seat
 					                                   </button>
@@ -206,7 +206,10 @@
 
 					               <!-- Confirm Button -->
 					               <div class="text-right">
-					                   <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+					                   <button th:id="'confirmBooking-' + ${showtime.showtimeId}"
+					                           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+					                           onclick="confirmBooking(this)"
+					                           th:data-showtime-id="${showtime.showtimeId}">
 					                       Confirm Booking
 					                   </button>
 					               </div>
@@ -217,47 +220,110 @@
 						
 
 						<!-- Modal JavaScript Logic -->
-						<script>
-						    const selectedSeatsMap = new Map();
+						<script th:inline="javascript">
+						// Global variables
+						let selectedSeats = {};
 
-						    function openModal(modalId) {
-						        document.getElementById(modalId).classList.remove('hidden');
-						        if (!selectedSeatsMap.has(modalId)) {
-						            selectedSeatsMap.set(modalId, new Set());
+						function openModal(modalId) {
+						    const showtimeId = modalId.split('-')[1];
+						    document.getElementById(modalId).classList.remove('hidden');
+						    loadOccupiedSeats(showtimeId);
+						}
+
+						function closeModal(modalId) {
+						    document.getElementById(modalId).classList.add('hidden');
+						    // Clear selected seats for this showtime
+						    const showtimeId = modalId.split('-')[1];
+						    selectedSeats[showtimeId] = [];
+						    updateSelectedSeatsDisplay(showtimeId);
+						}
+
+						function toggleSeat(button) {
+						    const showtimeId = button.dataset.showtimeId;
+						    const row = parseInt(button.dataset.seatRow);
+						    const col = parseInt(button.dataset.seatCol);
+						    
+						    if (!selectedSeats[showtimeId]) {
+						        selectedSeats[showtimeId] = [];
+						    }
+						    
+						    const seatIndex = selectedSeats[showtimeId].findIndex(seat => 
+						        seat.row === row && seat.column === col
+						    );
+						    
+						    if (seatIndex === -1) {
+						        selectedSeats[showtimeId].push({ row, column: col });
+						        button.classList.remove('bg-green-400');
+						        button.classList.add('bg-blue-400');
+						    } else {
+						        selectedSeats[showtimeId].splice(seatIndex, 1);
+						        button.classList.remove('bg-blue-400');
+						        button.classList.add('bg-green-400');
+						    }
+						    
+						    updateSelectedSeatsDisplay(showtimeId);
+						}
+
+						function updateSelectedSeatsDisplay(showtimeId) {
+						    const display = document.getElementById(`selectedSeats-${showtimeId}`);
+						    const seats = selectedSeats[showtimeId] || [];
+						    display.textContent = seats.map(seat => `${seat.row}-${seat.column}`).join(', ');
+						}
+
+						function confirmBooking(button) {
+						    const showtimeId = button.dataset.showtimeId;
+						    const seats = selectedSeats[showtimeId] || [];
+						    
+						    if (seats.length === 0) {
+						        alert('Please select at least one seat');
+						        return;
+						    }
+						    
+						    fetch('/booking/create', {
+						        method: 'POST',
+						        headers: {
+						            'Content-Type': 'application/x-www-form-urlencoded',
+						        },
+						        body: new URLSearchParams({
+						            'showtimeId': showtimeId,
+						            'selectedSeats': JSON.stringify(seats)
+						        })
+						    })
+						    .then(response => {
+						        if (!response.ok) {
+						            throw new Error('Network response was not ok');
 						        }
-						    }
-
-						    function closeModal(modalId) {
-						        document.getElementById(modalId).classList.add('hidden');
-						        selectedSeatsMap.get(modalId)?.clear();
-						        updateSelectedSeatsDisplay(modalId);
-						    }
-
-						    function toggleSeat(button) {
-						        const seatRow = button.dataset.seatRow;
-						        const seatCol = button.dataset.seatCol;
-						        const showtimeId = button.dataset.showtimeId;
-						        const seatId = `${seatRow}-${seatCol}`;
-						        const modalId = 'modal-' + showtimeId;
-
-						        const seatSet = selectedSeatsMap.get(modalId);
-						        if (seatSet.has(seatId)) {
-						            seatSet.delete(seatId);
-						            button.classList.remove('bg-blue-600', 'text-white');
-						            button.classList.add('bg-green-400', 'text-black');
+						        return response.text();
+						    })
+						    .then(result => {
+						        if (result === 'success') {
+						            alert('Booking successful!');
+						            window.location.reload();
 						        } else {
-						            seatSet.add(seatId);
-						            button.classList.remove('bg-green-400', 'text-black');
-						            button.classList.add('bg-blue-600', 'text-white');
+						            alert('Error: ' + result);
 						        }
-						        updateSelectedSeatsDisplay(modalId);
-						    }
+						    })
+						    .catch(error => {
+						        console.error('Error:', error);
+						        alert('Error occurred while booking. Please try again.');
+						    });
+						}
 
-						    function updateSelectedSeatsDisplay(modalId) {
-						        const seatDisplay = document.querySelector(`#${modalId} [id^="selectedSeats-"]`);
-						        const seats = Array.from(selectedSeatsMap.get(modalId) || []);
-						        seatDisplay.textContent = seats.length > 0 ? seats.join(', ') : 'None';
-						    }
+						function loadOccupiedSeats(showtimeId) {
+						    fetch(`/booking/check-seats/${showtimeId}`)
+						        .then(response => response.json())
+						        .then(occupiedSeats => {
+						            occupiedSeats.forEach(seat => {
+						                const button = document.getElementById(`seat-${showtimeId}-${seat.row}-${seat.column}`);
+						                if (button) {
+						                    button.classList.remove('bg-green-400');
+						                    button.classList.add('bg-red-400');
+						                    button.disabled = true;
+						                }
+						            });
+						        })
+						        .catch(error => console.error('Error loading occupied seats:', error));
+						}
 						</script>
 						
 						
