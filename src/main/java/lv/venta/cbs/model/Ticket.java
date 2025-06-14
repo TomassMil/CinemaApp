@@ -43,6 +43,7 @@ public class Ticket {
     @JoinColumn(name = "UserId", nullable = false)
     private User user;
 
+    // ticket idnex
     @OneToOne(optional = false)
     @JoinColumn(name = "SeatId", nullable = false)
     private Seat seat;
