@@ -45,11 +45,16 @@ public class MovieReview {
     @JoinColumn(name = "MovieId", nullable = false)
     private Movie movie;
     
-    public MovieReview(int rating, String comment, LocalDateTime reviewDate, Movie movie) {
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "UserId", nullable = false)
+    private User user;
+    
+    public MovieReview(int rating, String comment, LocalDateTime reviewDate, Movie movie, User user) {
         setRating(rating);
         setComment(comment);
         setReviewDate(reviewDate);
         setMovie(movie);
+        setUser(user);
     }
     
     public void setRating(int rating) {

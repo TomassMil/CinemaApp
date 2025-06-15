@@ -3,6 +3,7 @@ package lv.venta.cbs.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lv.venta.cbs.model.Movie;
@@ -10,6 +11,7 @@ import lv.venta.cbs.model.MovieReview;
 import lv.venta.cbs.repository.MovieReviewRepository;
 import lv.venta.cbs.service.MovieReviewService;
 
+@Service
 public class MovieReviewServiceImpl implements MovieReviewService {
 
 	private final MovieReviewRepository movieReviewRepository;
