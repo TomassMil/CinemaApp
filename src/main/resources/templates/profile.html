@@ -19,6 +19,21 @@
                 
                 <!-- Navigation -->
                 <div class="flex items-center space-x-4">
+                    <div th:if="${currentUser != null && currentUser.role != 'ROLE_USER'}" class="flex items-center space-x-2">
+                        <a href="/crud/movie" class="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-film"></i>
+                            <span>Movies</span>
+                        </a>
+                        <a href="/crud/showtime" class="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-clock"></i>
+                            <span>Showtimes</span>
+                        </a>
+                        <a href="/crud/room" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-door-open"></i>
+                            <span>Rooms</span>
+                        </a>
+                    </div>
+
                     <form th:action="@{/logout}" method="post" class="inline">
                         <button type="submit" class="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                             <i class="fas fa-sign-out-alt"></i>
