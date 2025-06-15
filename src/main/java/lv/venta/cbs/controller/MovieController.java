@@ -2,9 +2,11 @@ package lv.venta.cbs.controller;
 
 import lv.venta.cbs.model.User;
 import lv.venta.cbs.model.Movie;
+import lv.venta.cbs.model.MovieReview;
 import lv.venta.cbs.model.Showtime;
 import lv.venta.cbs.service.MovieService;
 import lv.venta.cbs.service.ShowtimeService;
+import lv.venta.cbs.service.MovieReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,11 +25,13 @@ public class MovieController {
 
     private final MovieService movieService;
     private final ShowtimeService showtimeService;
+    private final MovieReviewService movieReviewService;
 
     @Autowired
-    public MovieController(MovieService movieService, ShowtimeService showtimeService) {
+    public MovieController(MovieService movieService, ShowtimeService showtimeService, MovieReviewService movieReviewService) {
         this.movieService = movieService;
         this.showtimeService = showtimeService;
+        this.movieReviewService = movieReviewService;
     }
 
     @GetMapping("/{id}")
@@ -36,6 +40,7 @@ public class MovieController {
         if (movie == null) {
             return "redirect:/";
         }
+        
         // Add current user to model if authenticated
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !auth.getName().equals("anonymousUser")) {
@@ -44,8 +49,12 @@ public class MovieController {
         }
         
         List<Showtime> showtimes = showtimeService.getShowtimesByMovie(movie);
+        
+        List<MovieReview> movieReviews = movieReviewService.getMovieReviewsByMovie(movie);
+        
         model.addAttribute("movie", movie);
         model.addAttribute("showtimes", showtimes);
+        model.addAttribute("moviesReviews", movieReviews);
         return "movie/details";
     }
 } 

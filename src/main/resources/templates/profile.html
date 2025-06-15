@@ -45,120 +45,132 @@
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-8">My Profile</h1>
-            
-            <!-- Success Message -->
-            <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <span class="block sm:inline" th:text="${success}"></span>
-            </div>
-            
-            <!-- Profile Information -->
-            <div class="space-y-6">
-                <div class="flex items-center space-x-4">
-                    <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-4xl text-gray-400"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-semibold text-gray-800" th:text="${currentUser.fullName}"></h2>
-                        <p class="text-gray-600" th:text="${currentUser.username}"></p>
-                    </div>
-                </div>
+	<!-- Main Content -->
+	<main class="container mx-auto px-4 py-8">
+	    <div class="flex flex-col lg:flex-row gap-8">
+	        
+			<!-- Tickets Section (Left) -->
+			
+			<div class="lg:w-1/2 w-full bg-white rounded-lg shadow-md p-6 overflow-y-auto" style="max-height: 80vh;">
 
-                <div class="border-t pt-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Contact Information</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600">Email</label>
-                            <p class="mt-1 text-gray-800" th:text="${currentUser.email}"></p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600">Phone Number</label>
-                            <p class="mt-1 text-gray-800" th:text="${currentUser.phoneNumber}"></p>
-                        </div>
-                    </div>
-                </div>
+	            <h3 class="text-2xl font-bold text-gray-800 mb-6">My Tickets</h3>
 
-                <div class="border-t pt-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Account Information</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600">Member Since</label>
-                            <p class="mt-1 text-gray-800" th:text="${#temporals.format(currentUser.registrationDate, 'dd MMMM yyyy')}"></p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600">Account Type</label>
-                            <p class="mt-1 text-gray-800" th:text="${currentUser.role}"></p>
-                        </div>
-                    </div>
-                </div>
+	            <div th:if="${currentUser.tickets.empty}" class="text-center py-4 text-gray-600">
+	                <i class="fas fa-ticket-alt text-4xl mb-2"></i>
+	                <p>You haven't booked any tickets yet.</p>
+	            </div>
 
-                <!-- Edit Profile Button -->
-                <div class="border-t pt-6">
-                    <a href="/profile/edit" class="block w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center">
-                        <i class="fas fa-edit mr-2"></i>
-                        Edit Profile
-                    </a>
-                </div>
+	            <div th:unless="${currentUser.tickets.empty}" class="space-y-4">
+	                <div th:each="ticket : ${currentUser.tickets}" 
+	                     class="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow">
+	                    <div class="flex justify-between items-start">
+							<div class="flex items-center space-x-4">
+							    <!-- Poster image -->
+							    <img th:src="${ticket.showtime.movie.posterUrl}" alt="Poster"
+							         class="w-16 h-24 object-cover rounded-md shadow" />
 
-                <!-- Tickets Section -->
-                <div class="border-t pt-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">My Tickets</h3>
-                    
-                    <div th:if="${currentUser.tickets.empty}" class="text-center py-4 text-gray-600">
-                        <i class="fas fa-ticket-alt text-4xl mb-2"></i>
-                        <p>You haven't booked any tickets yet.</p>
-                    </div>
+							    <div>
+							        <h4 class="text-lg font-semibold text-gray-800" 
+							            th:text="${ticket.showtime.movie.title}">Movie Title</h4>
+							        <p class="text-gray-600" 
+							           th:text="${#temporals.format(ticket.showtime.showDateTime, 'EEEE, MMMM d, yyyy')}">Date</p>
+							        <p class="text-gray-600" 
+							           th:text="${#temporals.format(ticket.showtime.showDateTime, 'h:mm a')}">Time</p>
+							    </div>
+							</div>
+							
+	                        <div class="text-right">
+	                            <span th:class="${ticket.status == 'BOOKED' ? 'bg-green-100 text-green-800' : 
+	                                            ticket.status == 'CANCELLED' ? 'bg-red-100 text-red-800' : 
+	                                            'bg-blue-100 text-blue-800'}"
+	                                  class="px-3 py-1 rounded-full text-sm font-medium"
+	                                  th:text="${ticket.status}">Status</span>
+	                        </div>
+	                    </div>
+	                    
+	                    <div class="mt-3 pt-3 border-t border-gray-200">
+	                        <div class="grid grid-cols-2 gap-4">
+	                            <div>
+	                                <p class="text-sm text-gray-600">Room</p>
+	                                <p class="font-medium" th:text="${ticket.showtime.room.roomName}">Room Name</p>
+	                            </div>
+	                            <div>
+	                                <p class="text-sm text-gray-600">Seat</p>
+	                                <p class="font-medium" th:text="${ticket.seat.seatRow + '-' + ticket.seat.seatColumn}">Seat Number</p>
+	                            </div>
+	                        </div>
+	                    </div>
 
-                    <div th:unless="${currentUser.tickets.empty}" class="space-y-4">
-                        <div th:each="ticket : ${currentUser.tickets}" 
-                             class="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="text-lg font-semibold text-gray-800" 
-                                        th:text="${ticket.showtime.movie.title}">Movie Title</h4>
-                                    <p class="text-gray-600" 
-                                       th:text="${#temporals.format(ticket.showtime.showDateTime, 'EEEE, MMMM d, yyyy')}">Date</p>
-                                    <p class="text-gray-600" 
-                                       th:text="${#temporals.format(ticket.showtime.showDateTime, 'h:mm a')}">Time</p>
-                                </div>
-                                <div class="text-right">
-                                    <span th:class="${ticket.status == 'BOOKED' ? 'bg-green-100 text-green-800' : 
-                                                    ticket.status == 'CANCELLED' ? 'bg-red-100 text-red-800' : 
-                                                    'bg-blue-100 text-blue-800'}"
-                                          class="px-3 py-1 rounded-full text-sm font-medium"
-                                          th:text="${ticket.status}">Status</span>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-3 pt-3 border-t border-gray-200">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <p class="text-sm text-gray-600">Room</p>
-                                        <p class="font-medium" th:text="${ticket.showtime.room.roomName}">Room Name</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600">Seat</p>
-                                        <p class="font-medium" th:text="${ticket.seat.seatRow + '-' + ticket.seat.seatColumn}">Seat Number</p>
-                                    </div>
-                                </div>
-                            </div>
+	                    <div class="mt-3 pt-3 border-t border-gray-200">
+	                        <div>
+	                            <p class="text-sm text-gray-600">Booking Date</p>
+	                            <p class="font-medium" th:text="${#temporals.format(ticket.bookingTimestamp, 'dd MMM yyyy, h:mm a')}">Booking Date</p>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
 
-                            <div class="mt-3 pt-3 border-t border-gray-200">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-sm text-gray-600">Booking Date</p>
-                                        <p class="font-medium" th:text="${#temporals.format(ticket.bookingTimestamp, 'dd MMM yyyy, h:mm a')}">Booking Date</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+	        <!-- Profile Section (Right) -->
+	        <div class="lg:w-1/2 w-full bg-white rounded-lg shadow-md p-6">
+	            <h1 class="text-3xl font-bold text-gray-800 mb-8">My Profile</h1>
+
+	            <!-- Success Message -->
+	            <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+	                <span class="block sm:inline" th:text="${success}"></span>
+	            </div>
+
+	            <!-- Profile Information -->
+	            <div class="space-y-6">
+	                <div class="flex items-center space-x-4">
+	                    <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
+	                        <i class="fas fa-user text-4xl text-gray-400"></i>
+	                    </div>
+	                    <div>
+	                        <h2 class="text-2xl font-semibold text-gray-800" th:text="${currentUser.fullName}"></h2>
+	                        <p class="text-gray-600" th:text="${currentUser.username}"></p>
+	                    </div>
+	                </div>
+
+	                <div class="border-t pt-6">
+	                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Contact Information</h3>
+	                    <div class="space-y-4">
+	                        <div>
+	                            <label class="block text-sm font-medium text-gray-600">Email</label>
+	                            <p class="mt-1 text-gray-800" th:text="${currentUser.email}"></p>
+	                        </div>
+	                        <div>
+	                            <label class="block text-sm font-medium text-gray-600">Phone Number</label>
+	                            <p class="mt-1 text-gray-800" th:text="${currentUser.phoneNumber}"></p>
+	                        </div>
+	                    </div>
+	                </div>
+
+	                <div class="border-t pt-6">
+	                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Account Information</h3>
+	                    <div class="space-y-4">
+	                        <div>
+	                            <label class="block text-sm font-medium text-gray-600">Member Since</label>
+	                            <p class="mt-1 text-gray-800" th:text="${#temporals.format(currentUser.registrationDate, 'dd MMMM yyyy')}"></p>
+	                        </div>
+	                        <div>
+	                            <label class="block text-sm font-medium text-gray-600">Account Type</label>
+	                            <p class="mt-1 text-gray-800" th:text="${currentUser.role}"></p>
+	                        </div>
+	                    </div>
+	                </div>
+
+	                <!-- Edit Profile Button -->
+	                <div class="border-t pt-6">
+	                    <a href="/profile/edit" class="block w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center">
+	                        <i class="fas fa-edit mr-2"></i>
+	                        Edit Profile
+	                    </a>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</main>
+
 </body>
 </html> 
