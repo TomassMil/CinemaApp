@@ -107,6 +107,15 @@
 	                            <p class="font-medium" th:text="${#temporals.format(ticket.bookingTimestamp, 'dd MMM yyyy, h:mm a')}">Booking Date</p>
 	                        </div>
 	                    </div>
+						
+						<div class="mt-4 flex justify-end" th:if="${ticket.status == 'BOOKED'}">
+						    <button 
+						        type="button"
+						        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold transition"
+						        th:attr="onclick=|confirmCancellation(${ticket.ticketId})|">
+						        Cancel Ticket
+						    </button>
+						</div>
 	                </div>
 	            </div>
 	        </div>
@@ -173,4 +182,24 @@
 	</main>
 
 </body>
-</html> 
+</html>
+
+<script>
+	function confirmCancellation(ticketId) {
+	    if (confirm("Are you sure you want to cancel this ticket? Fees may apply.")) {
+	        fetch(`/ticket/cancel/${ticketId}`, {
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/json'
+	            }
+	        })
+	        .then(response => {
+	            if (response.ok) {
+	                location.reload(); // Refresh to show updated status
+	            } else {
+	                alert("Failed to cancel ticket.");
+	            }
+	        });
+	    }
+	}
+</script> 
