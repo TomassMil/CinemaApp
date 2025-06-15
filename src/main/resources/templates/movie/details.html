@@ -31,15 +31,6 @@
                 
                 <!-- Search and Account -->
                 <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <input type="text" 
-                               placeholder="Search movies..." 
-                               class="w-64 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
-                        <button class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-
                     <!-- Admin Controls -->
                     <div th:if="${currentUser != null && currentUser.role != 'ROLE_USER'}" class="flex items-center space-x-2">
                         <a href="/crud/movie" class="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
