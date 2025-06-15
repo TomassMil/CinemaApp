@@ -94,7 +94,10 @@ public class Showtime {
     }
     
     public int getAvailableSeats() {
-        return room.getCapacity() - tickets.size();
+        long bookedCount = tickets.stream()
+            .filter(ticket -> !ticket.getStatus().equalsIgnoreCase("CANCELLED"))
+            .count();
+        return room.getCapacity() - (int) bookedCount;
     }
     
     public String getSeatsInfo() {
