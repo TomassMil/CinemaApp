@@ -7,4 +7,6 @@ import lv.venta.cbs.model.TheaterRoom;
 
 @Repository
 public interface TheaterRoomRepository extends JpaRepository<TheaterRoom, Integer> {
+
+	TheaterRoom findByRoomName(String string);
 } 

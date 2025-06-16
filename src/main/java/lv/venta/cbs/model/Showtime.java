@@ -40,8 +40,11 @@ public class Showtime {
     @Column(name = "show_date_time", nullable = false)
     private LocalDateTime showDateTime;
     
-    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> tickets = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seat> seats = new ArrayList<>();
     
     public Showtime() {
     }

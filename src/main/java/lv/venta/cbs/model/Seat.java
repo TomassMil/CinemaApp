@@ -50,7 +50,7 @@ public class Seat {
     @JoinColumn(name = "ShowtimeId", nullable = false)
     private Showtime showtime;
 
-    @OneToOne(mappedBy = "seat", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "seat", cascade = CascadeType.ALL, orphanRemoval = true)
     private Ticket ticket;
     
     public Seat(int seatNumber, String seatType, int seatColumn, int seatRow, Showtime showtime) {

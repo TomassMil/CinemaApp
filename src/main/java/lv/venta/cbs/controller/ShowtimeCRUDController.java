@@ -80,7 +80,7 @@ public class ShowtimeCRUDController {
         return "redirect:/crud/showtime";
     }
 
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteShowtime(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
         try {
             showtimeService.deleteShowtime(id);

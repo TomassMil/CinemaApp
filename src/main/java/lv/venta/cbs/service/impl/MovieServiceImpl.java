@@ -49,10 +49,9 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Transactional
     public void deleteMovie(Integer id) {
-        if (!movieRepository.existsById(id)) {
-            throw new IllegalArgumentException("Movie not found with id: " + id);
-        }
-        movieRepository.deleteById(id);
+    	Movie movie = movieRepository.findById(id)
+		    .orElseThrow(() -> new IllegalArgumentException("Movie not found with id: " + id));
+		movieRepository.delete(movie); // lets cascading work properly
     }
 
     @Override

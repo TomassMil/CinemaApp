@@ -26,9 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "movie")
-public class Movie {
-	// Sheit vajag more validation un parbaudes
-	
+public class Movie {	
     public enum MovieStatus {
         UPCOMING,
         HIDDEN,
@@ -83,11 +81,12 @@ public class Movie {
 
     // "Any operation performed on a Movie will also be automatically cascaded (applied) to its related Showtime objects."
     // - Ja izdzesh movie tad izdzeshas arii showtimes tai movie.
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Showtime> showtimes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieReview> reviews = new ArrayList<>();
+    
     
     public Movie(String title, String description, int durationInMinutes, String genre, String ageRating, LocalDate releaseDate, String cast, String posterUrl, String status) {
         this.title = title;
