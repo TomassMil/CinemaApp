@@ -14,7 +14,6 @@ public class TheaterRoomServiceImpl implements TheaterRoomService {
 
     private final TheaterRoomRepository roomRepository;
 
-    @Autowired
     public TheaterRoomServiceImpl(TheaterRoomRepository roomRepository) {
         this.roomRepository = roomRepository;
     }
